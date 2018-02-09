@@ -173,6 +173,12 @@ bool easy::InlineParameters::runOnModule(llvm::Module &M) {
   for(Attribute Attr : FunAttrs)
     WrapperFun->addFnAttr(Attr);
 
+  // add metadata to identify the entry function
+  LLVMContext &Ctx = M.getContext();
+  Metadata* MDStr = MDString::get(Ctx, "entry");
+  MDNode* MD = MDNode::get(Ctx, {MDStr});
+  WrapperFun->addMetadata("easy::jit", *MD);
+
   return true;
 }
 
